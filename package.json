@@ -1,0 +1,19 @@
+{
+  "name": "car-racer",
+  "version": "1.0.0",
+  "description": "Car Racing Game in JS",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shivamjain1/Car-Racer-Vanilla-JS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shivamjain1/Car-Racer-Vanilla-JS/issues"
+  },
+  "homepage": "https://github.com/shivamjain1/Car-Racer-Vanilla-JS#readme"
+}
