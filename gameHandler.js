@@ -136,12 +136,18 @@ function gamePlay() {
         if(keys.ArrowUp && player.y > (road.top + 70)) player.y -= player.speed;
         if(keys.ArrowDown && player.y < (road.bottom - 85)) player.y += player.speed;
         if(keys.ArrowLeft && player.x > 0) player.x -= player.speed;
-        if(keys.ArrowRight && player.x < (road.width - 70)) player.x += player.speed;
+        if(keys.ArrowRight && player.x < (road.width - 65)) player.x += player.speed;
 
         document.addEventListener('touchmove', (e)=>{
             e.preventDefault();
-            player.x = e.touches[0].clientX - 35;
-            player.y = e.touches[0].clientY - 35;
+            const x = e.touches[0].clientX - 35;
+            const y = e.touches[0].clientY - 35;
+            if(y > (road.top + 70) && y < (road.bottom - 85)) {
+                player.y = y;
+            }
+            if(x > 0 && x < (road.width - 60)) {
+                player.x = x;
+            }
         });
 
         carElement.style.top = player.y + "px";
