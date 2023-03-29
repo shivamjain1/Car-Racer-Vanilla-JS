@@ -1,32 +1,35 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Car Game</title>
-    <link href="styles.css" rel="stylesheet">
-</head>
-<body>
+    <link href="styles.css" rel="stylesheet" />
+  </head>
+  <body>
     <main class="carGame">
-        <p class="score">0</p>
-        <dialog class="startScreen" open>
-            <h1>Car Game</h1>
-            <details>
-                <summary>Правила игры</summary>
-                <p>Управляй машиной, чтобы не врезаться в другие машины на дороге.</p>
-                <p>Для управления используй палец.</p>
-            </details>
-            <div>
-                <p>Выбери уровень сложности:</p>
-                <fieldset class="level">
-                    <button id="easy">Ученик</button>
-                    <button id="moderate">Таксист</button>
-                    <button id="difficult">Гонщик</button>
-                </fieldset>
-            </div>
-        </dialog>
-        <div class="gameArea"></div>
+      <p class="scoreData">
+        <span class="score">Очки: 0</span>
+        <span class="coins">Монетки: 0</span>
+      </p>
+      <dialog class="startScreen" open>
+        <h1>Car Game</h1>
+        <details>
+          <summary>Правила игры</summary>
+          <p>Управляй машиной, чтобы не врезаться в другие машины на дороге.</p>
+          <p>Для управления используй палец.</p>
+        </details>
+        <div>
+          <p>Выбери уровень сложности:</p>
+          <fieldset class="level">
+            <button id="easy">Ученик</button>
+            <button id="moderate">Таксист</button>
+            <button id="difficult">Гонщик</button>
+          </fieldset>
+        </div>
+      </dialog>
+      <div class="gameArea"></div>
     </main>
     <script src="gameHandler.js"></script>
-</body>
+  </body>
 </html>

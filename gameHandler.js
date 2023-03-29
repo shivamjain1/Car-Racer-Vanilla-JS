@@ -1,10 +1,11 @@
 const score = document.querySelector('.score');
+const coins = document.querySelector('.coins');
 const startScreen = document.querySelector('.startScreen');
 const gameArea = document.querySelector('.gameArea');
 const level = document.querySelector('.level');
 
 
-const levelSpeed = {easy: 7, moderate: 10, difficult: 14};
+const levelSpeed = { easy: 7, moderate: 10, difficult: 14 };
 
 let keys = {
     ArrowUp: false,
@@ -12,7 +13,13 @@ let keys = {
     ArrowLeft: false,
     ArrowRight: false
 }
-let player = { speed: 7, score: 0 };
+let player = { speed: 7, score: 0, coins: 0 };
+
+function addCoin(coinItem) {
+    player.coins++;
+    coins.innerText = `Монетки: ${player.coins}`;
+    coinItem.remove();
+}
 
 function startGame(e) {
     player.speed = levelSpeed[e.target.id];
@@ -21,12 +28,13 @@ function startGame(e) {
 
     player.start = true;
     player.score = 0;
+    player.coin = 0;
     window.requestAnimationFrame(gamePlay);
 
-    for(let i=0; i<5; i++){
+    for (let i = 0; i < 5; i++) {
         let roadLineElement = document.createElement('div');
         roadLineElement.setAttribute('class', 'roadLines');
-        roadLineElement.y = (i*150);
+        roadLineElement.y = (i * 150);
         roadLineElement.style.top = roadLineElement.y + "px";
         gameArea.appendChild(roadLineElement);
     }
@@ -36,37 +44,47 @@ function startGame(e) {
     gameArea.appendChild(carElement);
 
     player.x = carElement.offsetLeft;
-    player.y = carElement.offsetTop  ;
+    player.y = carElement.offsetTop;
 
-    for(let i=0; i<3; i++){
+    for (let i = 0; i < 3; i++) {
         let enemyCar = document.createElement('div');
         enemyCar.setAttribute('class', 'enemyCar');
-        enemyCar.y = ((i+1) * 350) * - 1;
+        enemyCar.y = ((i + 1) * 350) * - 1;
         enemyCar.style.top = enemyCar.y + "px";
         enemyCar.style.backgroundColor = randomColor();
         enemyCar.style.left = Math.floor(Math.random() * 350) + "px";
         gameArea.appendChild(enemyCar);
+
+    }
+
+    for (let i = 0; i < 100; i++) {
+        let coin = document.createElement('div');
+        coin.setAttribute('class', 'coin');
+        coin.y = ((i + 1) * 350) * - 1;
+        coin.style.top = coin.y + "px";
+        coin.style.left = Math.floor(Math.random() * 350) + "px";
+        gameArea.appendChild(coin);
     }
 }
 
-level.addEventListener('click', (e)=> {
+level.addEventListener('click', (e) => {
     startGame(e);
 });
 
-function randomColor(){
-    function c(){
+function randomColor() {
+    function c() {
         let hex = Math.floor(Math.random() * 256).toString(16);
-        return ("0"+ String(hex)).substr(-2);
+        return ("0" + String(hex)).substr(-2);
     }
-    return "#"+c()+c()+c();
+    return "#" + c() + c() + c();
 }
 
-function onCollision(a,b){
+function onCollision(a, b) {
     aRect = a.getBoundingClientRect();
     bRect = b.getBoundingClientRect();
 
-    return !((aRect.top >  bRect.bottom) || (aRect.bottom <  bRect.top) ||
-        (aRect.right <  bRect.left) || (aRect.left >  bRect.right));
+    return !((aRect.top > bRect.bottom) || (aRect.bottom < bRect.top) ||
+        (aRect.right < bRect.left) || (aRect.left > bRect.right));
 }
 
 function onGameOver() {
@@ -75,6 +93,7 @@ function onGameOver() {
     startScreen.innerHTML = `
         <h1>Игра окончена!</h1>
         <p>Результат: <span class="scoreNumber">${player.score}</span> очков</p>
+        <p>Собрано монет: <span class="scoreNumber">${player.coins}</span></p>
         <p>Чтобы начать заново, выбери уровень сложности:</p>
         `;
     const level = document.createElement('fieldset');
@@ -93,15 +112,15 @@ function onGameOver() {
     startScreen.appendChild(level);
     level.classList.add('level');
 
-    level.addEventListener('click', (e)=> {
+    level.addEventListener('click', (e) => {
         startGame(e);
     });
 }
 
-function moveRoadLines(){
+function moveRoadLines() {
     let roadLines = document.querySelectorAll('.roadLines');
-    roadLines.forEach((item)=> {
-        if(item.y >= 700){
+    roadLines.forEach((item) => {
+        if (item.y >= 700) {
             item.y -= 750;
         }
         item.y += player.speed;
@@ -109,14 +128,28 @@ function moveRoadLines(){
     });
 }
 
-function moveEnemyCars(carElement){
+function moveEnemyCars(carElement) {
     let enemyCars = document.querySelectorAll('.enemyCar');
-    enemyCars.forEach((item)=> {
+    enemyCars.forEach((item) => {
 
-        if(onCollision(carElement, item)){
+        if (onCollision(carElement, item)) {
             onGameOver();
         }
-        if(item.y >= 750){
+        if (item.y >= 750) {
+            item.y = -300;
+            item.style.left = Math.floor(Math.random() * 350) + "px";
+        }
+        item.y += player.speed;
+        item.style.top = item.y + "px";
+    });
+}
+
+function moveCoins(cointElement) {
+    let coins = document.querySelectorAll('.coin');
+    coins.forEach((item) => {
+
+        if (onCollision(cointElement, item)) addCoin(item);
+        if (item.y >= 750) {
             item.y = -300;
             item.style.left = Math.floor(Math.random() * 350) + "px";
         }
@@ -129,24 +162,25 @@ function gamePlay() {
     let carElement = document.querySelector('.car');
     let road = gameArea.getBoundingClientRect();
 
-    if(player.start){
+    if (player.start) {
         moveRoadLines();
         moveEnemyCars(carElement);
+        moveCoins(carElement);
 
-        if(keys.ArrowUp && player.y > (road.top + 70)) player.y -= player.speed;
-        if(keys.ArrowDown && player.y < (road.bottom - 85)) player.y += player.speed;
-        if(keys.ArrowLeft && player.x > 0) player.x -= player.speed;
-        if(keys.ArrowRight && player.x < (road.width - 65)) player.x += player.speed;
+        if (keys.ArrowUp && player.y > (road.top + 70)) player.y -= player.speed;
+        if (keys.ArrowDown && player.y < (road.bottom - 85)) player.y += player.speed;
+        if (keys.ArrowLeft && player.x > 0) player.x -= player.speed;
+        if (keys.ArrowRight && player.x < (road.width - 65)) player.x += player.speed;
 
-        document.addEventListener('touchmove', (e)=>{
+        document.addEventListener('touchmove', (e) => {
             // Buggy
             e.preventDefault();
             const x = e.touches[0].clientX - 35;
             const y = e.touches[0].clientY - 35;
-            if(y > (road.top + 70) && y < (road.bottom - 85)) {
+            if (y > (road.top + 70) && y < (road.bottom - 85)) {
                 player.y = y;
             }
-            if(x > 0 && x < (road.width - 60)) {
+            if (x > 0 && x < (road.width - 60)) {
                 player.x = x;
             }
         });
@@ -158,19 +192,19 @@ function gamePlay() {
 
         player.score++;
         const ps = player.score - 1;
-        score.innerHTML = 'Очки: ' + ps;
+        score.innerText = 'Очки: ' + ps;
     }
 }
-document.addEventListener('keydown', (e)=>{
-    e.preventDefault();
-    if(Object.keys(keys).includes(e.key)) {
+document.addEventListener('keydown', (e) => {
+    if (Object.keys(keys).includes(e.key)) {
+        e.preventDefault();
         keys[e.key] = true;
     }
 });
 
-document.addEventListener('keyup', (e)=>{
-    e.preventDefault();
-    if(Object.keys(keys).includes(e.key)) {
+document.addEventListener('keyup', (e) => {
+    if (Object.keys(keys).includes(e.key)) {
+        e.preventDefault();
         keys[e.key] = false;
     }
 });
