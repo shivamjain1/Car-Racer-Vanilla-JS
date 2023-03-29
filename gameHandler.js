@@ -139,6 +139,7 @@ function gamePlay() {
         if(keys.ArrowRight && player.x < (road.width - 65)) player.x += player.speed;
 
         document.addEventListener('touchmove', (e)=>{
+            // Buggy
             e.preventDefault();
             const x = e.touches[0].clientX - 35;
             const y = e.touches[0].clientY - 35;
