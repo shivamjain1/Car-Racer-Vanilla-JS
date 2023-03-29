@@ -54,6 +54,17 @@
     outline-offset: 1px;
 }
 
+.coin {
+    position: absolute;
+    aspect-ratio: 1/1;
+    width: 30px;
+    background-color: tomato;
+    border-radius: 50%;
+    background-image: none;
+    mask-image: none;
+    bottom: 120px;
+}
+
 .roadLines {
     width: 10px;
     height: 100px;
@@ -74,8 +85,10 @@
     border-left: 7px solid var(--snow-gray);
 }
 
-.score {
+.scoreData {
     position: absolute;
+    display: flex;
+    justify-content: space-between;
     top: 0;
     left: 50%;
     transform: translateX(-50%);

@@ -1,4 +1,5 @@
 const score = document.querySelector('.score');
+const coins = document.querySelector('.coins');
 const startScreen = document.querySelector('.startScreen');
 const gameArea = document.querySelector('.gameArea');
 const level = document.querySelector('.level');
@@ -12,7 +13,13 @@ let keys = {
     ArrowLeft: false,
     ArrowRight: false
 }
-let player = { speed: 7, score: 0 };
+let player = { speed: 7, score: 0, coins: 0 };
+
+function addCoin(coinItem) {
+    player.coins++;
+    coins.innerText = `Монетки: ${player.coins}`;
+    coinItem.remove();
+}
 
 function startGame(e) {
     player.speed = levelSpeed[e.target.id];
@@ -21,6 +28,7 @@ function startGame(e) {
 
     player.start = true;
     player.score = 0;
+    player.coin = 0;
     window.requestAnimationFrame(gamePlay);
 
     for(let i=0; i<5; i++){
@@ -46,6 +54,16 @@ function startGame(e) {
         enemyCar.style.backgroundColor = randomColor();
         enemyCar.style.left = Math.floor(Math.random() * 350) + "px";
         gameArea.appendChild(enemyCar);
+
+    }
+
+    for(let i=0; i<100; i++){
+        let coin = document.createElement('div');
+        coin.setAttribute('class', 'coin');
+        coin.y = ((i+1) * 350) * - 1;
+        coin.style.top = coin.y + "px";
+        coin.style.left = Math.floor(Math.random() * 350) + "px";
+        gameArea.appendChild(coin);
     }
 }
 
@@ -125,6 +143,20 @@ function moveEnemyCars(carElement){
     });
 }
 
+function moveCoins(cointElement){
+    let coins = document.querySelectorAll('.coin');
+    coins.forEach((item)=> {
+
+        if(onCollision(cointElement, item)) addCoin(item);
+        if(item.y >= 750){
+            item.y = -300;
+            item.style.left = Math.floor(Math.random() * 350) + "px";
+        }
+        item.y += player.speed;
+        item.style.top = item.y + "px";
+    });
+}
+
 function gamePlay() {
     let carElement = document.querySelector('.car');
     let road = gameArea.getBoundingClientRect();
@@ -132,6 +164,7 @@ function gamePlay() {
     if(player.start){
         moveRoadLines();
         moveEnemyCars(carElement);
+        moveCoins(carElement);
 
         if(keys.ArrowUp && player.y > (road.top + 70)) player.y -= player.speed;
         if(keys.ArrowDown && player.y < (road.bottom - 85)) player.y += player.speed;
@@ -158,19 +191,19 @@ function gamePlay() {
 
         player.score++;
         const ps = player.score - 1;
-        score.innerHTML = 'Очки: ' + ps;
+        score.innerText = 'Очки: ' + ps;
     }
 }
 document.addEventListener('keydown', (e)=>{
-    e.preventDefault();
     if(Object.keys(keys).includes(e.key)) {
+        e.preventDefault();
         keys[e.key] = true;
     }
 });
 
 document.addEventListener('keyup', (e)=>{
-    e.preventDefault();
     if(Object.keys(keys).includes(e.key)) {
+        e.preventDefault();
         keys[e.key] = false;
     }
 });
