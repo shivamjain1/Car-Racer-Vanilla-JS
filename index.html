@@ -1,30 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CarRacer</title> 
-    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet">
+    <title>Car Game</title>
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-    <div class="carGame">
-        <div class="score"></div>
-        <div class="startScreen">
-            <p>Press here to start <br>
-               Use Arrow keys to move <br>
-               If you hit another car you will lose.  
-            </p>
-            <div>Select Level
-                <span class="level">
-                    <button id="easy">Easy</button>
-                    <button id="moderate">Moderate</button>
-                    <button id="difficult">Difficult</button>
-                </span>
+    <main class="carGame">
+        <p class="score">0</p>
+        <dialog class="startScreen" open>
+            <h1>Car Game</h1>
+            <details>
+                <summary>Правила игры</summary>
+                <p>Управляй машиной, чтобы не врезаться в другие машины на дороге.</p>
+                <p>Для управления используй палец.</p>
+            </details>
+            <div>
+                <p>Выбери уровень сложности:</p>
+                <fieldset class="level">
+                    <button id="easy">Ученик</button>
+                    <button id="moderate">Таксист</button>
+                    <button id="difficult">Гонщик</button>
+                </fieldset>
             </div>
-        </div>
+        </dialog>
         <div class="gameArea"></div>
-    </div>
+    </main>
     <script src="gameHandler.js"></script>
 </body>
 </html>

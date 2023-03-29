@@ -3,14 +3,6 @@ const startScreen = document.querySelector('.startScreen');
 const gameArea = document.querySelector('.gameArea');
 const level = document.querySelector('.level');
 
-// loading audio files
-
-let gameStart = new Audio();
-let gameOver = new Audio();
-
-gameStart.src = "assets/audio/game_theme.mp3";
-gameOver.src = "assets/audio/gameOver_theme.mp3";
-
 
 const levelSpeed = {easy: 7, moderate: 10, difficult: 14};
 
@@ -21,18 +13,13 @@ let keys = {
     ArrowRight: false
 }
 let player = { speed: 7, score: 0 };
-level.addEventListener('click', (e)=> {
-    player.speed = levelSpeed[e.target.id];
-});
 
-startScreen.addEventListener('click', () => {
-    // gameArea.classList.remove('hide');
-    startScreen.classList.add('hide');
+function startGame(e) {
+    player.speed = levelSpeed[e.target.id];
+    startScreen.close();
     gameArea.innerHTML = "";
 
     player.start = true;
-    gameStart.play();
-    gameStart.loop = true;
     player.score = 0;
     window.requestAnimationFrame(gamePlay);
 
@@ -60,6 +47,10 @@ startScreen.addEventListener('click', () => {
         enemyCar.style.left = Math.floor(Math.random() * 350) + "px";
         gameArea.appendChild(enemyCar);
     }
+}
+
+level.addEventListener('click', (e)=> {
+    startGame(e);
 });
 
 function randomColor(){
@@ -75,15 +66,36 @@ function onCollision(a,b){
     bRect = b.getBoundingClientRect();
 
     return !((aRect.top >  bRect.bottom) || (aRect.bottom <  bRect.top) ||
-        (aRect.right <  bRect.left) || (aRect.left >  bRect.right)); 
+        (aRect.right <  bRect.left) || (aRect.left >  bRect.right));
 }
 
 function onGameOver() {
     player.start = false;
-    gameStart.pause();
-    gameOver.play();
-    startScreen.classList.remove('hide');
-    startScreen.innerHTML = "Game Over <br> Your final score is " + player.score + "<br> Press here to restart the game.";
+    startScreen.showModal();
+    startScreen.innerHTML = `
+        <h1>Игра окончена!</h1>
+        <p>Результат: <span class="scoreNumber">${player.score}</span> очков</p>
+        <p>Чтобы начать заново, выбери уровень сложности:</p>
+        `;
+    const level = document.createElement('fieldset');
+    const easy = document.createElement('button');
+    const moderate = document.createElement('button');
+    const difficult = document.createElement('button');
+    easy.id = 'easy';
+    moderate.id = 'moderate';
+    difficult.id = 'difficult';
+    easy.innerText = 'Ученик';
+    moderate.innerText = 'Таксист';
+    difficult.innerText = 'Гонщик';
+    level.appendChild(easy);
+    level.appendChild(moderate);
+    level.appendChild(difficult);
+    startScreen.appendChild(level);
+    level.classList.add('level');
+
+    level.addEventListener('click', (e)=> {
+        startGame(e);
+    });
 }
 
 function moveRoadLines(){
@@ -111,7 +123,7 @@ function moveEnemyCars(carElement){
         item.y += player.speed;
         item.style.top = item.y + "px";
     });
-} 
+}
 
 function gamePlay() {
     let carElement = document.querySelector('.car');
@@ -120,7 +132,7 @@ function gamePlay() {
     if(player.start){
         moveRoadLines();
         moveEnemyCars(carElement);
-            
+
         if(keys.ArrowUp && player.y > (road.top + 70)) player.y -= player.speed;
         if(keys.ArrowDown && player.y < (road.bottom - 85)) player.y += player.speed;
         if(keys.ArrowLeft && player.x > 0) player.x -= player.speed;
@@ -133,7 +145,7 @@ function gamePlay() {
 
         player.score++;
         const ps = player.score - 1;
-        score.innerHTML = 'Score: ' + ps;          
+        score.innerHTML = 'Очки: ' + ps;
     }
 }
 document.addEventListener('keydown', (e)=>{
