@@ -138,6 +138,12 @@ function gamePlay() {
         if(keys.ArrowLeft && player.x > 0) player.x -= player.speed;
         if(keys.ArrowRight && player.x < (road.width - 70)) player.x += player.speed;
 
+        document.addEventListener('touchmove', (e)=>{
+            e.preventDefault();
+            player.x = e.touches[0].clientX - 35;
+            player.y = e.touches[0].clientY - 35;
+        });
+
         carElement.style.top = player.y + "px";
         carElement.style.left = player.x + "px";
 
@@ -150,10 +156,14 @@ function gamePlay() {
 }
 document.addEventListener('keydown', (e)=>{
     e.preventDefault();
-    keys[e.key] = true;
+    if(Object.keys(keys).includes(e.key)) {
+        keys[e.key] = true;
+    }
 });
 
 document.addEventListener('keyup', (e)=>{
     e.preventDefault();
-    keys[e.key] = false;
+    if(Object.keys(keys).includes(e.key)) {
+        keys[e.key] = false;
+    }
 });
