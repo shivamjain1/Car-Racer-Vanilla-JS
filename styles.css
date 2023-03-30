@@ -23,6 +23,10 @@
     box-sizing: border-box;
 }
 
+html, body {
+    overflow: hidden;
+}
+
 .hide {
     display: none;
 }
@@ -50,15 +54,16 @@
     mask-repeat: no-repeat;
     mask-position: center;
     mask-size: cover;
-    outline: 2px solid tomato;
-    outline-offset: 1px;
 }
 
 .coin {
     position: absolute;
     aspect-ratio: 1/1;
     width: 30px;
-    background-color: tomato;
+    background-color: gold;
+    outline: goldenrod 5px solid;
+    outline-offset: -7px;
+    /* box-shadow: 0 0 10px 3px goldenrod; */ /* pefomance issues */
     border-radius: 50%;
     background-image: none;
     mask-image: none;
