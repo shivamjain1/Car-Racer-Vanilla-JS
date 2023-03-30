@@ -78,6 +78,10 @@ function addCoin(coinItem) {
 }
 
 function startGame(e) {
+    document.addEventListener('touchmove', touchMove);
+    document.addEventListener('keydown', keyDown);
+    document.addEventListener('keyup', keyUp);
+
     player.speed = levelSpeed[e.target.id];
     startScreen.close();
     gameArea.innerHTML = "";
@@ -113,6 +117,9 @@ function onCollision(a, b) {
 }
 
 function gameOver() {
+    document.removeEventListener('keydown', keyDown);
+    document.removeEventListener('keyup', keyUp);
+    document.removeEventListener('touchmove', touchMove);
     player.start = false;
     startScreen.showModal();
     startScreen.innerHTML = `
@@ -195,24 +202,25 @@ function gamePlay() {
     }
 }
 
-// GLOBASL LISTENERS
-document.ontouchmove = (e) => {
-    const x = e.touches[0].clientX - 35;
-    if(playerCar && x > 0 && x < (road.width - 60)) playerCar.style.left = `${x}px`;
-};
-
+// GLOBAL LISTENERS
 level.onclick = startGame;
 
-document.onkeydown = (e) => {
+// EVENT HANDLERS
+function keyDown(e) {
     if(Object.keys(keys).includes(e.key)) {
         e.preventDefault();
-        keys[e.key] = true;
-    }
-};
+        keys[e.key] = true
+    };
+}
 
-document.onkeyup = (e) => {
+function keyUp(e) {
     if(Object.keys(keys).includes(e.key)) {
         e.preventDefault();
         keys[e.key] = false;
     }
+}
+
+function touchMove(e) {
+    const x = e.touches[0].clientX - 35;
+    if(playerCar && x > 0 && x < (road.width - 60)) playerCar.style.left = `${x}px`;
 }
