@@ -5,6 +5,7 @@ const gameArea = document.querySelector('.gameArea');
 const level = document.querySelector('.level');
 const screenHeight = window.innerHeight;
 const road = gameArea.getBoundingClientRect();
+let playerCar = false;
 
 const levelSpeed = { easy: 7, moderate: 10, difficult: 14 };
 const gameSettings = {
@@ -19,6 +20,14 @@ let keys = {
 }
 
 let player = { speed: 7, score: 0, coins: 0 };
+
+function movePlayerByKeys(key) {
+    if (playerCar) {
+        let x = playerCar.offsetLeft;
+        if(key === 1 && x < road.width - 60) playerCar.style.left = `${x+=player.speed}px`
+        if(key === -1 && x > 0) playerCar.style.left = `${x-=player.speed}px`
+    }
+};
 
 function createCoin(i) {
     let coin = document.createElement('div');
@@ -54,11 +63,12 @@ function createEnemyCar(i) {
 
 
 function createPlayerCar() {
-    let playerCar = document.createElement('div');
-    playerCar.setAttribute('class', 'car');
-    gameArea.appendChild(playerCar);
-    player.x = playerCar.offsetLeft;
-    player.y = playerCar.offsetTop;
+    let playerCarElement = document.createElement('div');
+    playerCarElement.setAttribute('class', 'car');
+    gameArea.appendChild(playerCarElement);
+    player.x = playerCarElement.offsetLeft;
+    player.y = playerCarElement.offsetTop;
+    playerCar = document.querySelector('.car');
 }
 
 function addCoin(coinItem) {
@@ -170,17 +180,13 @@ function moveCoins(coinElement) {
 
 // PLAYING GAME
 function gamePlay() {
-    let playerCar = document.querySelector('.car');
-
     if (player.start) {
         moveRoadLines();
         moveEnemyCars(playerCar);
         moveCoins(playerCar);
 
-        if (keys.ArrowLeft && player.x > 0) player.x -= player.speed;
-        if (keys.ArrowRight && player.x < (road.width - 65)) player.x += player.speed;
-
-        playerCar.style.left = player.x + "px";
+        if(keys.ArrowLeft) movePlayerByKeys(-1);
+        if(keys.ArrowRight) movePlayerByKeys(1);
 
         window.requestAnimationFrame(gamePlay);
         player.score++;
@@ -192,21 +198,21 @@ function gamePlay() {
 // GLOBASL LISTENERS
 document.ontouchmove = (e) => {
     const x = e.touches[0].clientX - 35;
-    if (x > 0 && x < (road.width - 60) && player.x !== x) player.x = x;
+    if(playerCar && x > 0 && x < (road.width - 60)) playerCar.style.left = `${x}px`;
 };
 
 level.onclick = startGame;
 
 document.onkeydown = (e) => {
-    if (Object.keys(keys).includes(e.key)) {
+    if(Object.keys(keys).includes(e.key)) {
         e.preventDefault();
         keys[e.key] = true;
     }
 };
 
 document.onkeyup = (e) => {
-    if (Object.keys(keys).includes(e.key)) {
+    if(Object.keys(keys).includes(e.key)) {
         e.preventDefault();
         keys[e.key] = false;
     }
-};
+}
