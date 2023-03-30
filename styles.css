@@ -162,3 +162,10 @@ html, body {
     cursor: pointer;
     font-weight: bold;
 }
+ footer {
+    color: white;
+    opacity: .3;
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+ }
