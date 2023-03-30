@@ -4,6 +4,7 @@ const startScreen = document.querySelector('.startScreen');
 const gameArea = document.querySelector('.gameArea');
 const level = document.querySelector('.level');
 const screenHeight = window.innerHeight;
+const road = gameArea.getBoundingClientRect();
 
 const levelSpeed = { easy: 7, moderate: 10, difficult: 14 };
 const gameSettings = {
@@ -11,8 +12,6 @@ const gameSettings = {
     enemyCarsCount: 3,
     roadLinesCount: 5,
 };
-
-let touchX = 0;
 
 let keys = {
     ArrowLeft: false,
@@ -172,7 +171,6 @@ function moveCoins(coinElement) {
 // PLAYING GAME
 function gamePlay() {
     let playerCar = document.querySelector('.car');
-    let road = gameArea.getBoundingClientRect();
 
     if (player.start) {
         moveRoadLines();
@@ -181,11 +179,10 @@ function gamePlay() {
 
         if (keys.ArrowLeft && player.x > 0) player.x -= player.speed;
         if (keys.ArrowRight && player.x < (road.width - 65)) player.x += player.speed;
-        if (touchX > 0 && touchX < (road.width - 60) && player.x !== touchX) player.x = touchX;
 
         playerCar.style.left = player.x + "px";
-        window.requestAnimationFrame(gamePlay);
 
+        window.requestAnimationFrame(gamePlay);
         player.score++;
         const ps = player.score - 1;
         score.innerText = 'Очки: ' + ps;
@@ -195,7 +192,7 @@ function gamePlay() {
 // GLOBASL LISTENERS
 document.ontouchmove = (e) => {
     const x = e.touches[0].clientX - 35;
-    if(player.x !== x) touchX = x;
+    if (x > 0 && x < (road.width - 60) && player.x !== x) player.x = x;
 };
 
 level.onclick = startGame;
