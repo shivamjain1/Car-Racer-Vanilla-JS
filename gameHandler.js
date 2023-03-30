@@ -24,8 +24,8 @@ let player = { speed: 7, score: 0, coins: 0 };
 function movePlayerByKeys(key) {
     if (playerCar) {
         let x = playerCar.offsetLeft;
-        if(key === 1 && x < road.width - 60) playerCar.style.left = `${x+=player.speed}px`
-        if(key === -1 && x > 0) playerCar.style.left = `${x-=player.speed}px`
+        if (key === 1 && x < road.width - 60) playerCar.style.left = `${x += player.speed}px`
+        if (key === -1 && x > 0) playerCar.style.left = `${x -= player.speed}px`
     }
 };
 
@@ -192,8 +192,8 @@ function gamePlay() {
         moveEnemyCars(playerCar);
         moveCoins(playerCar);
 
-        if(keys.ArrowLeft) movePlayerByKeys(-1);
-        if(keys.ArrowRight) movePlayerByKeys(1);
+        if (keys.ArrowLeft) movePlayerByKeys(-1);
+        if (keys.ArrowRight) movePlayerByKeys(1);
 
         window.requestAnimationFrame(gamePlay);
         player.score++;
@@ -207,14 +207,14 @@ level.onclick = startGame;
 
 // EVENT HANDLERS
 function keyDown(e) {
-    if(Object.keys(keys).includes(e.key)) {
+    if (Object.keys(keys).includes(e.key)) {
         e.preventDefault();
         keys[e.key] = true
     };
 }
 
 function keyUp(e) {
-    if(Object.keys(keys).includes(e.key)) {
+    if (Object.keys(keys).includes(e.key)) {
         e.preventDefault();
         keys[e.key] = false;
     }
@@ -222,5 +222,5 @@ function keyUp(e) {
 
 function touchMove(e) {
     const x = e.touches[0].clientX - 35;
-    if(playerCar && x > 0 && x < (road.width - 60)) playerCar.style.left = `${x}px`;
+    if (playerCar && x > 0 && x < (road.width - 60)) playerCar.style.left = `${x}px`;
 }
