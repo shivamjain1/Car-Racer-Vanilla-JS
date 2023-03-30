@@ -181,7 +181,7 @@ function gamePlay() {
 
         if (keys.ArrowLeft && player.x > 0) player.x -= player.speed;
         if (keys.ArrowRight && player.x < (road.width - 65)) player.x += player.speed;
-        if (touchX > 0 && touchX < (road.width - 60)) player.x = touchX;
+        if (touchX > 0 && touchX < (road.width - 60) && player.x !== touchX) player.x = touchX;
 
         playerCar.style.left = player.x + "px";
         window.requestAnimationFrame(gamePlay);
@@ -194,7 +194,8 @@ function gamePlay() {
 
 // GLOBASL LISTENERS
 document.ontouchmove = (e) => {
-    touchX = e.touches[0].clientX - 35;
+    const x = e.touches[0].clientX - 35;
+    if(player.x !== x) touchX = x;
 };
 
 level.onclick = startGame;
