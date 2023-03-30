@@ -3,7 +3,7 @@ const coins = document.querySelector('.coins');
 const startScreen = document.querySelector('.startScreen');
 const gameArea = document.querySelector('.gameArea');
 const level = document.querySelector('.level');
-
+const screenHeight = window.innerHeight;
 
 const levelSpeed = { easy: 7, moderate: 10, difficult: 14 };
 const gameSettings = {
@@ -11,6 +11,8 @@ const gameSettings = {
     enemyCarsCount: 3,
     roadLinesCount: 5,
 };
+
+let touchX = 0;
 
 let keys = {
     ArrowLeft: false,
@@ -27,6 +29,11 @@ function createCoin(i) {
     coin.style.left = Math.floor(Math.random() * 350) + "px";
     gameArea.appendChild(coin);
 }
+
+function repositionCoin(coin) {
+    coin.y = -300;
+    coin.style.left = Math.floor(Math.random() * 350) + "px";
+};
 
 function createRoadLine(i) {
     let roadLineElement = document.createElement('div');
@@ -58,8 +65,7 @@ function createPlayerCar() {
 function addCoin(coinItem) {
     player.coins++;
     coins.innerText = `Монетки: ${player.coins}`;
-    coinItem.remove();
-    createCoin(1);
+    repositionCoin(coinItem);
 }
 
 function startGame(e) {
@@ -72,14 +78,13 @@ function startGame(e) {
     player.coins = 0;
     coins.innerText = `Очки: ${player.score}`;
     coins.innerText = `Монетки: ${player.coins}`;
-    window.requestAnimationFrame(gamePlay);
 
     for (let i = 0; i < gameSettings.roadLinesCount; i++) createRoadLine(i);
-
     createPlayerCar();
-
     for (let i = 0; i < gameSettings.coinsCount; i++) createCoin(i);
     for (let i = 0; i < gameSettings.enemyCarsCount; i++) createEnemyCar(i);
+
+    window.requestAnimationFrame(gamePlay);
 }
 
 function randomColor() {
@@ -98,7 +103,7 @@ function onCollision(a, b) {
         (aRect.right < bRect.left) || (aRect.left > bRect.right));
 }
 
-function onGameOver() {
+function gameOver() {
     player.start = false;
     startScreen.showModal();
     startScreen.innerHTML = `
@@ -130,9 +135,8 @@ function onGameOver() {
 function moveRoadLines() {
     let roadLines = document.querySelectorAll('.roadLines');
     roadLines.forEach((item) => {
-        if (item.y >= 700) {
-            item.y -= 750;
-        }
+        const itemHeight = item.clientHeight;
+        if (item.y >= screenHeight - (itemHeight / 3)) item.y -= screenHeight;
         item.y += player.speed;
         item.style.transform = `translateY(${item.y}px)`;
     });
@@ -142,13 +146,13 @@ function moveRoadLines() {
 function moveEnemyCars(carElement) {
     let enemyCars = document.querySelectorAll('.enemyCar');
     enemyCars.forEach((item) => {
+        if (onCollision(carElement, item)) gameOver();
 
-        if (onCollision(carElement, item)) onGameOver();
-
-        if (item.y >= 750) {
+        if (item.y >= screenHeight) {
             item.y = -300;
             item.style.left = Math.floor(Math.random() * 350) + "px";
         }
+
         item.y += player.speed;
         item.style.top = item.y + "px";
     });
@@ -157,18 +161,11 @@ function moveEnemyCars(carElement) {
 // COINS LOGIC
 function moveCoins(coinElement) {
     let coins = document.querySelectorAll('.coin');
-    coins.forEach((item) => {
-
-        if (onCollision(coinElement, item)) addCoin(item);
-
-        if (item.y >= 750) {
-            item.y = -300;
-            // item.style.transform = `translateX(${Math.floor(Math.random() * 350)}px)`;
-            item.style.left = Math.floor(Math.random() * 350) + "px";
-        }
-        item.y += player.speed;
-        // item.style.transform = `translateY(${item.y}px)`;
-        item.style.top = item.y + "px";
+    coins.forEach((coin) => {
+        if (onCollision(coinElement, coin)) addCoin(coin);
+        if (coin.y >= screenHeight) repositionCoin(coin);
+        coin.y += player.speed;
+        coin.style.top = coin.y + "px";
     });
 }
 
@@ -184,17 +181,9 @@ function gamePlay() {
 
         if (keys.ArrowLeft && player.x > 0) player.x -= player.speed;
         if (keys.ArrowRight && player.x < (road.width - 65)) player.x += player.speed;
-
-        document.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            const x = e.touches[0].clientX - 35;
-            if (x > 0 && x < (road.width - 60)) {
-                player.x = x;
-            }
-        });
+        if (touchX > 0 && touchX < (road.width - 60)) player.x = touchX;
 
         playerCar.style.left = player.x + "px";
-
         window.requestAnimationFrame(gamePlay);
 
         player.score++;
@@ -204,6 +193,10 @@ function gamePlay() {
 }
 
 // GLOBASL LISTENERS
+document.ontouchmove = (e) => {
+    touchX = e.touches[0].clientX - 35;
+};
+
 level.onclick = startGame;
 
 document.onkeydown = (e) => {

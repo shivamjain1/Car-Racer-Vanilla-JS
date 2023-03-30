@@ -50,6 +50,10 @@ html, body {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    -webkit-mask-image: url("./assets/images/car.svg");
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: cover;
     mask-image: url("./assets/images/car.svg");
     mask-repeat: no-repeat;
     mask-position: center;
@@ -81,7 +85,7 @@ html, body {
 
 .gameArea {
     width: var(--game-width);
-    height: 100lvh;
+    height: 100vh;
     background: var(--asphalt-black);
     margin: auto;
     position: relative;
