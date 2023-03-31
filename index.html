@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Car Game</title>
+    <meta name="description" content="Аркадная игра в которой нужно объезжать другие машины в потоке и собирать монетки.">
     <link href="styles.css" rel="stylesheet" />
   </head>
   <body>
@@ -14,23 +15,13 @@
       </p>
       <dialog class="startScreen" open>
         <h1>Car Game</h1>
-        <details>
-          <summary>Правила игры</summary>
-          <p>Управляй машиной, чтобы не врезаться в другие машины на дороге.</p>
-          <p>Для управления используй палец.</p>
-        </details>
-        <div>
-          <p>Выбери уровень сложности:</p>
-          <fieldset class="level">
-            <button id="easy">Ученик</button>
-            <button id="moderate">Таксист</button>
-            <button id="difficult">Гонщик</button>
-          </fieldset>
-        </div>
+        <button class="startGameButton" type="button">Поехали</button>
       </dialog>
-      <div class="gameArea"></div>
+      <section class="gameArea" aria-label="Игровое поле"></section>
     </main>
-    <footer>v.1.0.1c</footer>
+    <footer>
+      <span aria-label="Версия игры">v.1.0.2a</span>
+    </footer>
     <script src="gameHandler.js"></script>
   </body>
 </html>

@@ -145,27 +145,30 @@ html, body {
     cursor: pointer;
 }
 
-.level {
-    margin-top: 15px;
-    border: none;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.level button {
+.startGameButton {
+    display: block;
     padding: 10px;
     font-size: 1em;
     color: var(--gentle-blue);
     background: var(--neon-blue);
     border: none;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin: 25px auto 0;
     cursor: pointer;
     font-weight: bold;
 }
- footer {
+
+.startGameButton:active {
+    box-shadow: inset 0 0 0 5px rgb(0, 49, 117);
+}
+
+footer {
     color: white;
     opacity: .3;
     position: absolute;
     bottom: 0;
     left: 10px;
- }
+    mix-blend-mode: difference;
+}
